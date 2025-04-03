@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --board-size: 90vw; /* default for mobile */
+}
+
+@media (min-width: 640px) {
+  :root {
+    --board-size: 512px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --board-size: 640px;
+  }
+}

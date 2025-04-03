@@ -9,6 +9,8 @@ import GameInfo from './components/GameInfo';
 import PromotionModal from './components/PromotionModal';
 import ApiKeyModal from './components/ApiKeyModal';
 import useChessGame, { GAME_MODES } from './hooks/useChessGame';
+import { FaChessKnight } from 'react-icons/fa';
+
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -28,6 +30,8 @@ function App() {
     apiKey,
     loading,
     error,
+    hintSquares,
+    requestHint,
     handleSquareClick,
     handlePromotion,
     changeGameMode,
@@ -52,7 +56,9 @@ function App() {
   if (!gameStarted) {
     return (
       <div className="min-h-screen bg-[#2e1c0f] flex flex-col items-center justify-center text-white">
-        <h1 className="text-5xl font-bold mb-8">LLM-Chess</h1>
+        
+        <h1 className="text-5xl font-bold mb-8"> <FaChessKnight className="text-yellow-500" />
+        LLM-Chess</h1>
         <div className="flex gap-6">
           <button
             className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-lg font-semibold rounded-lg shadow-md"
@@ -95,6 +101,7 @@ function App() {
             highlightedSquares={highlightedSquares}
             lastMove={lastMove}
             onSquareClick={handleSquareClick}
+            hintSquares={hintSquares}
           />
 
           <GameInfo
@@ -103,6 +110,7 @@ function App() {
             moveHistory={moveHistory}
             loading={loading}
             error={error}
+            requestHint={requestHint}
           />
         </div>
       </main>

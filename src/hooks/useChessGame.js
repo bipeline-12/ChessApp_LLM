@@ -18,6 +18,8 @@ export const GAME_MODES = {
 };
 
 const useChessGame = () => {
+  const [hintSquares, setHintSquares] = useState([]);
+
   const [board, setBoard] = useState(initialBoardState);
   const [selectedSquare, setSelectedSquare] = useState(null);
   const [highlightedSquares, setHighlightedSquares] = useState([]);
@@ -101,6 +103,7 @@ const useChessGame = () => {
   // Handle square selection
   const handleSquareClick = useCallback((row, col) => {
     // Ignore clicks during loading or game over
+    setHintSquares([]);
     if (loading || gameState === 'checkmate' || gameState === 'stalemate') {
       return;
     }
@@ -109,6 +112,9 @@ const useChessGame = () => {
     if (promotionPending) {
       return;
     }
+
+    
+      
     
     const clickedPiece = board[row][col];
     const clickedPieceColor = pieceColor(clickedPiece);
@@ -145,6 +151,14 @@ const useChessGame = () => {
       // Clear selection
       setSelectedSquare(null);
       setHighlightedSquares([]);
+
+      if (
+        gameMode === GAME_MODES.HUMAN_VS_LLM &&
+        currentPlayer === 'black' &&
+        !gameOver
+      ) {
+        requestLlmMove();
+      }
     } else {
       // Select the square if it has a piece of the current player
       if (clickedPieceColor === currentPlayer) {
@@ -292,6 +306,8 @@ const useChessGame = () => {
     highlightedSquares,
     promotionPending,
     lastMove,
+    hintSquares,
+    requestHint,
     handleSquareClick,
     handlePromotion,
     resetGame,
@@ -300,5 +316,18 @@ const useChessGame = () => {
     setApiKey,
   };
 };
+
+const requestHint = async () => {
+    if (!apiKey || gameMode !== GAME_MODES.HUMAN_VS_LLM) return;
+    const fen = getFEN(board);
+    const move = await getHintMove({ fen, moveHistory, provider: llmProvider, apiKey });
+  
+    if (move?.length === 4) {
+      const from = [8 - Number(move[1]), move.charCodeAt(0) - 97];
+      const to = [8 - Number(move[3]), move.charCodeAt(2) - 97];
+      setHintSquares([from, to]);
+    }
+  };
+  
 
 export default useChessGame;

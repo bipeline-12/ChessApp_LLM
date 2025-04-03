@@ -1,7 +1,7 @@
 // Square.jsx
 import React from 'react';
 
-const Square = ({ row, col, piece, isSelected, isHighlighted, isLastMove, onClick }) => {
+const Square = ({ row, col, piece, isSelected, isHighlighted, isLastMove, isHinted, onClick }) => {
   const isLight = (row + col) % 2 === 0;
 
   let bgColor = isLight ? '#f0d9b5' : '#b58863';
@@ -36,6 +36,9 @@ const Square = ({ row, col, piece, isSelected, isHighlighted, isLastMove, onClic
       )}
       {isHighlighted && !piece && (
         <div className="w-4 h-4 rounded-full bg-black/20" />
+      )}
+      {isHinted && (
+        <div className="absolute inset-1 border-4 border-yellow-400 rounded-md pointer-events-none" />
       )}
     </div>
   );

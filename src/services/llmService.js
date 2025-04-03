@@ -58,7 +58,7 @@ const LLM_PROVIDERS = {
         maxOutputTokens: 200
       }
     }),
-    getUrl: (apiKey) => `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+    getUrl: (apiKey) => `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
     extractMove: (response) => {
       try {
         const content = response.candidates[0].content.parts[0].text;
@@ -174,3 +174,16 @@ Your move (in a2a4 format):`;
     throw error;
   }
 };
+
+export async function getHintMove({ fen, moveHistory, provider, apiKey }) {
+    const prompt = `You're a chess expert. Given the current position and history, suggest a strong next move in UCI format (e.g., e2e4). Respond with only the move.
+  
+  FEN: ${fen}
+  Moves: ${moveHistory.join(' ')}
+  
+  Best move:`;
+  
+    const result = await generateChessMove({ prompt, provider, apiKey });
+    return result; // should be like "e2e4"
+  }
+  

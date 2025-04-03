@@ -1,138 +1,110 @@
 import React, { useState } from 'react';
 import { GAME_MODES } from '../hooks/useChessGame';
 import { getAvailableLLMs } from '../services/llmService';
+import { FaChessBoard, FaRobot, FaKey, FaEye, FaEyeSlash, FaUndo, FaPalette } from 'react-icons/fa';
 
-const GameControls = ({ 
-  gameMode, 
-  llmProvider, 
-  apiKey, 
-  onGameModeChange, 
-  onLlmProviderChange, 
+
+
+const GameControls = ({
+  gameMode,
+  llmProvider,
+  apiKey,
+  onGameModeChange,
+  onLlmProviderChange,
   onApiKeyChange,
-  onReset 
+  onReset,
+  requestHint
 }) => {
   const [showApiKey, setShowApiKey] = useState(false);
   const availableLLMs = getAvailableLLMs();
-  
+
   return (
-    <div 
-      className="game-controls"
-      style={{
-        backgroundColor: '#f5f5f5',
-        padding: '16px',
-        borderRadius: '8px',
-        marginBottom: '16px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '12px'
-      }}
+    <div
+      className="bg-[#fdfaf6] p-6 rounded-xl shadow-md w-full max-w-md space-y-4 border border-[#e8decf]"
     >
-      <div>
-        <h3 style={{ marginTop: 0 }}>Game Settings</h3>
-      </div>
-      
-      <div>
-        <label>Game Mode:</label>
-        <div style={{ marginTop: '8px' }}>
-          <label style={{ marginRight: '12px' }}>
+      <h3 className="text-lg font-bold text-gray-800"> <FaChessBoard className="text-yellow-600" />Game Settings</h3>
+
+      <div className="space-y-2">
+        <label className="block font-semibold text-gray-700">Game Mode:</label>
+        <div className="flex gap-6">
+          <label className="flex items-center space-x-2 font-medium text-gray-700">
             <input
               type="radio"
+              className="accent-yellow-500"
               name="gameMode"
               value={GAME_MODES.HUMAN_VS_HUMAN}
               checked={gameMode === GAME_MODES.HUMAN_VS_HUMAN}
               onChange={() => onGameModeChange(GAME_MODES.HUMAN_VS_HUMAN)}
             />
-            Human vs Human
+            <span>Human vs Human</span>
           </label>
-          <label>
+          <label className="flex items-center space-x-2 font-medium text-gray-700">
             <input
               type="radio"
+              className="accent-yellow-500"
               name="gameMode"
               value={GAME_MODES.HUMAN_VS_LLM}
               checked={gameMode === GAME_MODES.HUMAN_VS_LLM}
               onChange={() => onGameModeChange(GAME_MODES.HUMAN_VS_LLM)}
             />
-            Human vs AI (LLM)
+            <span>Human vs AI (LLM)</span>
           </label>
         </div>
       </div>
-      
+
       {gameMode === GAME_MODES.HUMAN_VS_LLM && (
         <>
           <div>
-            <label htmlFor="llm-provider">LLM Provider:</label>
+            <label className="block font-semibold text-gray-700 mb-1">LLM Provider:</label>
             <select
-              id="llm-provider"
               value={llmProvider}
               onChange={(e) => onLlmProviderChange(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px',
-                borderRadius: '4px',
-                border: '1px solid #ddd',
-                marginTop: '4px'
-              }}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
             >
               {availableLLMs.map(llm => (
                 <option key={llm.id} value={llm.id}>{llm.name}</option>
               ))}
             </select>
           </div>
-          
+
           <div>
-            <label htmlFor="api-key">API Key:</label>
-            <div style={{ display: 'flex', marginTop: '4px' }}>
+            <label className="block font-semibold text-gray-700 mb-1">API Key:</label>
+            <div className="flex items-center">
               <input
-                id="api-key"
                 type={showApiKey ? 'text' : 'password'}
                 value={apiKey}
                 onChange={(e) => onApiKeyChange(e.target.value)}
                 placeholder={`Enter ${llmProvider} API Key`}
-                style={{
-                  flex: 1,
-                  padding: '8px',
-                  borderRadius: '4px',
-                  border: '1px solid #ddd'
-                }}
+                className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
               <button
+                type="button"
                 onClick={() => setShowApiKey(!showApiKey)}
-                style={{
-                  marginLeft: '8px',
-                  padding: '8px',
-                  borderRadius: '4px',
-                  border: '1px solid #ddd',
-                  backgroundColor: '#fff',
-                  cursor: 'pointer'
-                }}
+                className="ml-2 px-3 py-2 border rounded-md text-sm bg-white hover:bg-gray-100 transition"
               >
                 {showApiKey ? 'Hide' : 'Show'}
               </button>
             </div>
-            <small style={{ color: '#777', marginTop: '4px', display: 'block' }}>
+            <small className="text-xs text-gray-500 mt-1 block">
               Your API key is used only for making requests and is not stored.
             </small>
           </div>
         </>
       )}
-      
-      <div>
+
+      <button
+        onClick={onReset}
+        className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg shadow-md transition-all font-semibold"
+      >
+        New Game </button>
         <button
-          onClick={onReset}
-          style={{
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            padding: '10px 16px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '14px'
-          }}
+          onClick={requestHint}
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md transition-all font-semibold"
         >
-          New Game
+            💡 Get Hint
         </button>
-      </div>
     </div>
   );
 };
+
 export default GameControls;

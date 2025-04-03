@@ -4,7 +4,6 @@ const GameInfo = ({ currentPlayer, gameState, moveHistory, loading, error }) => 
   const getStatusMessage = () => {
     if (loading) return 'AI is thinking...';
     if (error) return `Error: ${error}`;
-    
     switch (gameState) {
       case 'check':
         return `${currentPlayer === 'white' ? 'White' : 'Black'} is in check!`;
@@ -16,78 +15,52 @@ const GameInfo = ({ currentPlayer, gameState, moveHistory, loading, error }) => 
         return `Current player: ${currentPlayer === 'white' ? 'White' : 'Black'}`;
     }
   };
-  
-  // Format the move history to display in a more readable way
+
   const formatMoveHistory = () => {
-    const formattedHistory = [];
-    
+    const formatted = [];
     for (let i = 0; i < moveHistory.length; i += 2) {
-      const moveNumber = Math.floor(i / 2) + 1;
-      const whiteMove = moveHistory[i];
-      const blackMove = i + 1 < moveHistory.length ? moveHistory[i + 1] : '';
-      
-      formattedHistory.push(
-        <div key={moveNumber} style={{ display: 'flex' }}>
-          <div style={{ width: '30px', color: '#888' }}>{moveNumber}.</div>
-          <div style={{ width: '70px' }}>{whiteMove}</div>
-          <div style={{ width: '70px' }}>{blackMove}</div>
+      const moveNum = Math.floor(i / 2) + 1;
+      const white = moveHistory[i];
+      const black = i + 1 < moveHistory.length ? moveHistory[i + 1] : '';
+      formatted.push(
+        <div key={moveNum} className="flex gap-4">
+          <div className="text-gray-500 w-6">{moveNum}.</div>
+          <div className="w-12">{white}</div>
+          <div className="w-12">{black}</div>
         </div>
       );
     }
-    
-    return formattedHistory;
+    return formatted;
   };
-  
+
   return (
     <div
-      className="game-info"
-      style={{
-        width: '200px',
-        padding: '16px',
-        backgroundColor: '#f5f5f5',
-        borderRadius: '8px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px'
-      }}
+      className="bg-[#fdfaf6] p-6 rounded-xl shadow-md w-full max-w-xs border border-[#e8decf] space-y-6"
     >
       <div>
-        <h3 style={{ margin: 0, marginBottom: '8px' }}>Game Status</h3>
-        <div 
-          style={{ 
-            padding: '8px',
-            backgroundColor: loading ? '#f8f9fa' : error ? '#ffebee' : '#e8f5e9',
-            borderRadius: '4px',
-            border: loading ? '1px solid #dee2e6' : error ? '1px solid #ffcdd2' : '1px solid #c8e6c9'
-          }}
+        <h3 className="text-lg font-bold text-gray-800 mb-2">Game Status</h3>
+        <div
+          className={`p-3 rounded-md border font-semibold text-sm ${
+            loading
+              ? 'bg-gray-100 border-gray-300 text-gray-600'
+              : error
+              ? 'bg-red-100 border-red-300 text-red-700'
+              : 'bg-green-50 border-green-300 text-green-700'
+          }`}
         >
           {getStatusMessage()}
           {loading && (
-            <div 
-              style={{ 
-                marginTop: '8px',
-                display: 'flex',
-                justifyContent: 'center'
-              }}
-            >
-              <div className="loading-spinner"></div>
+            <div className="mt-2 flex justify-center">
+              <div className="w-4 h-4 border-2 border-t-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
             </div>
           )}
         </div>
       </div>
-      
+
       <div>
-        <h3 style={{ margin: 0, marginBottom: '8px' }}>Move History</h3>
+        <h3 className="text-lg font-bold text-gray-800 mb-2">Move History</h3>
         <div
-          style={{
-            height: '300px',
-            overflowY: 'auto',
-            padding: '8px',
-            backgroundColor: '#fff',
-            borderRadius: '4px',
-            border: '1px solid #ddd',
-            fontSize: '14px'
-          }}
+          className="h-64 overflow-y-auto bg-white rounded-md border border-gray-300 px-4 py-2 text-sm font-mono shadow-inner"
         >
           {moveHistory.length > 0 ? formatMoveHistory() : <p>No moves yet.</p>}
         </div>
@@ -95,4 +68,5 @@ const GameInfo = ({ currentPlayer, gameState, moveHistory, loading, error }) => 
     </div>
   );
 };
+
 export default GameInfo;

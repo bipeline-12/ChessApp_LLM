@@ -7,7 +7,8 @@ const Board = ({
   selectedSquare,
   highlightedSquares,
   lastMove,
-  onSquareClick
+  onSquareClick,
+  hintSquares
 }) => {
   const isHighlighted = (row, col) => highlightedSquares.some(([r, c]) => r === row && c === col);
   const isLastMove = (row, col) => {
@@ -15,11 +16,15 @@ const Board = ({
     const { from, to } = lastMove;
     return (from[0] === row && from[1] === col) || (to[0] === row && to[1] === col);
   };
+  const isHinted = (row, col) => {
+    return hintSquares?.some(([r, c]) => r === row && c === col);
+  };
+  
 
   return (
     <div
       className="grid grid-cols-8 rounded-lg shadow-lg overflow-hidden"
-      style={{ width: '512px' }}
+      style={{ width: 'var(--board-size)' }}
     >
       {board.map((row, rowIndex) =>
         row.map((piece, colIndex) => (
@@ -32,6 +37,7 @@ const Board = ({
             isHighlighted={isHighlighted(rowIndex, colIndex)}
             isLastMove={isLastMove(rowIndex, colIndex)}
             onClick={onSquareClick}
+            isHinted={isHinted(rowIndex, colIndex)}
           />
         ))
       )}
