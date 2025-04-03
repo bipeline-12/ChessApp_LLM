@@ -1,103 +1,41 @@
+// Square.jsx
 import React from 'react';
 
 const Square = ({ row, col, piece, isSelected, isHighlighted, isLastMove, onClick }) => {
-  const isLightSquare = (row + col) % 2 === 0;
-  
-  // Determine background color based on state
-  let backgroundColor = isLightSquare ? '#f0d9b5' : '#b58863';
-  if (isSelected) {
-    backgroundColor = '#646fa8';
-  } else if (isHighlighted) {
-    backgroundColor = isLightSquare ? '#afd8af' : '#8fbc8f';
-  } else if (isLastMove) {
-    backgroundColor = isLightSquare ? '#f7e9b5' : '#d8b377';
-  }
-  
-  // Get coordinates in chess notation
-  const file = String.fromCharCode(97 + col);
-  const rank = 8 - row;
-  
-  // Determine piece image URL
-  const getPieceImage = (piece) => {
-    if (!piece) return null;
-    
-    const color = piece[0] === 'w' ? 'white' : 'black';
-    let pieceType;
-    
-    switch (piece[1]) {
-      case 'K': pieceType = 'king'; break;
-      case 'Q': pieceType = 'queen'; break;
-      case 'R': pieceType = 'rook'; break;
-      case 'B': pieceType = 'bishop'; break;
-      case 'N': pieceType = 'knight'; break;
-      case 'P': pieceType = 'pawn'; break;
-      default: return null;
-    }
-    
-    return `https://www.chess.com/chess-themes/pieces/neo/150/${color}_${pieceType}.png`;
-  };
-  
+  const isLight = (row + col) % 2 === 0;
+
+  let bgColor = isLight ? '#f0d9b5' : '#b58863';
+  if (isSelected) bgColor = '#646fa8';
+  else if (isHighlighted) bgColor = isLight ? '#afd8af' : '#8fbc8f';
+  else if (isLastMove) bgColor = isLight ? '#f7e9b5' : '#d8b377';
+
+  const getPieceImage = (piece) => piece ? `/pieces/${piece}.svg` : null;
+
   return (
-    <div 
-      className="square" 
-      style={{
-        backgroundColor,
-        position: 'relative',
-        width: '50px',
-        height: '50px',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        cursor: 'pointer'
-      }}
+    <div
+      className="relative w-full aspect-square flex justify-center items-center cursor-pointer transition-transform hover:scale-105"
+      style={{ backgroundColor: bgColor }}
       onClick={() => onClick(row, col)}
     >
-      {/* Coordinates on edges */}
+
       {col === 0 && (
-        <div style={{
-          position: 'absolute',
-          left: '2px',
-          top: '2px',
-          fontSize: '10px',
-          color: isLightSquare ? '#b58863' : '#f0d9b5'
-        }}>
-          {rank}
-        </div>
+        <div className="absolute top-1 left-1 text-[10px] opacity-70 text-white">{8 - row}</div>
       )}
       {row === 7 && (
-        <div style={{
-          position: 'absolute',
-          right: '2px',
-          bottom: '2px',
-          fontSize: '10px',
-          color: isLightSquare ? '#b58863' : '#f0d9b5'
-        }}>
-          {file}
+        <div className="absolute bottom-1 right-1 text-[10px] opacity-70 text-white">
+          {String.fromCharCode(97 + col)}
         </div>
       )}
-      
-      {/* Chess piece */}
       {piece && (
-        <img 
-          src={getPieceImage(piece)} 
-          alt={piece} 
-          style={{
-            width: '85%',
-            height: '85%',
-            objectFit: 'contain'
-          }}
+        <img
+          src={getPieceImage(piece)}
+          alt={piece}
+          className="w-[80%] h-[80%] object-contain pointer-events-none"
           draggable={false}
         />
       )}
-      
-      {/* Highlight for legal moves on empty squares */}
       {isHighlighted && !piece && (
-        <div style={{
-          width: '16px',
-          height: '16px',
-          borderRadius: '50%',
-          backgroundColor: 'rgba(0, 0, 0, 0.2)'
-        }} />
+        <div className="w-4 h-4 rounded-full bg-black/20" />
       )}
     </div>
   );
